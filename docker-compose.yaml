@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    environment:
+      - BOT_TOKEN=5909559188:AAH0rRETt-l3rlX6xRlW4RViEdHaFI8-JMo
+      - EMAIL_PASSWORD=kHnWdjiyX4fqg59n6zWB
+      - EMAIL_LOGIN=reportbotaiogram@mail.ru
+      - EMAIL_ADDRESS=sanfit@vk.com
+    command: ["python3", "bot.py"]
