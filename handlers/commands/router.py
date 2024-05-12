@@ -13,14 +13,15 @@ from .services import cancel_and_clear_state
 
 router = Router()
 
+
 @router.message(CommandStart())
 async def start_message(message: types.Message) -> None:
     builder = await command_start_keyboard()
     await message.answer(
-            START_TEXT.format(message.from_user.full_name),
-            reply_markup=builder.as_markup()
-        )
-    
+        START_TEXT.format(message.from_user.full_name),
+        reply_markup=builder.as_markup()
+    )
+
 
 @router.message(Command("cancel"))
 async def command_cancel(message: types.Message, state: FSMContext):

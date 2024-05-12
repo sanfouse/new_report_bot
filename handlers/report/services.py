@@ -1,31 +1,42 @@
-import text
-from aiogram import types
-from aiogram.fsm.context import FSMContext
-from keyboards.report.inline import command_finish_keyboard
 import re
 
-async def get_result_text(data: dict) -> str:
-    return text.RESULT_TEXT.format(
-        data['route_number'], data['date'], data['time'], data['route'], data['car_numbers'], data['report'], data['email'], data["username"]
-    )
+from aiogram import types
+from aiogram.fsm.context import FSMContext
 
-async def get_email_result_text(data: dict) -> str:
-    return text.EMAIL_RESULT_TEXT.format(
-        data['route_number'], data['date'], data['time'], data['route'], data['car_numbers'], data['report'], data['email'], data["username"]
-    )
+import text
+from keyboards.report.inline import command_finish_keyboard
 
-async def show_result_text(message: types.Message, state: FSMContext):
-    state_data = await state.get_data()
-    builder = await command_finish_keyboard()
-    RESULT_TEXT = await get_result_text(state_data)
-    if state_data["photo"]:
-        photo: types.PhotoSize = state_data["photo"]
-        return await message.answer_photo(
-            photo=photo.file_id,
-            caption=RESULT_TEXT,
-            reply_markup=builder.as_markup()
+
+class ResultHandler:
+    @staticmethod
+    async def get_result_text(data: dict, is_email: bool = False) -> str:
+        template = text.EMAIL_RESULT_TEXT if is_email else text.RESULT_TEXT
+        return template.format(
+            data['route_number'],
+            data['date'],
+            data['time'],
+            data['route'],
+            data['car_numbers'],
+            data['report'],
+            data['email'],
+            data["username"]
         )
-    await message.answer(RESULT_TEXT, reply_markup=builder.as_markup())
+
+    @classmethod
+    async def show_result_text(
+        cls, message: types.Message, state: FSMContext, is_email: bool = False
+    ):
+        state_data = await state.get_data()
+        builder = await command_finish_keyboard()
+        RESULT_TEXT = await cls.get_result_text(state_data, is_email)
+        if state_data["photo"]:
+            photo: types.PhotoSize = state_data["photo"]
+            return await message.answer_photo(
+                photo=photo.file_id,
+                caption=RESULT_TEXT,
+                reply_markup=builder.as_markup()
+            )
+        await message.answer(RESULT_TEXT, reply_markup=builder.as_markup())
 
 
 class FormatChecker:
@@ -41,5 +52,6 @@ class FormatChecker:
 
     @staticmethod
     def check_email_format(email):
-        pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        pattern = re.compile(
+            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         return bool(re.match(pattern, email))

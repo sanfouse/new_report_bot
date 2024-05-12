@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ActionChoicePlatform(str, Enum):
     telegram = 'Телеграм'
     email = 'Почта'

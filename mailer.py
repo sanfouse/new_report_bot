@@ -23,7 +23,8 @@ class EmailSender:
             with open(photo_data, "rb") as f:
                 image_data = f.read()
                 image = MIMEImage(image_data)
-                image.add_header('Content-Disposition', 'attachment', filename='photo.jpg')
+                image.add_header('Content-Disposition',
+                                 'attachment', filename='photo.jpg')
                 message.attach(image)
 
         return message

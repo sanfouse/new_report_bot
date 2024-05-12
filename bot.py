@@ -5,8 +5,12 @@ from config import settings
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.client.bot import DefaultBotProperties
 
-bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(
+    token=settings.BOT_TOKEN, default=DefaultBotProperties(
+        parse_mode=ParseMode.HTML)
+)
 dp = Dispatcher()
+
 
 async def main():
     dp.include_routers(commands.commands_router)

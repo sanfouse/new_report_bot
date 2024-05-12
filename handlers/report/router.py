@@ -10,7 +10,7 @@ from keyboards.report.callbacks import (СhoicePlatformCallback,
 from keyboards.report.inline import choice_answer_platform_keyboard
 from states.default import Report
 
-from .services import get_email_result_text, show_result_text
+from .services import ResultHandler
 from .filters import FormatFilter
 from mailer import sender
 
@@ -56,22 +56,22 @@ async def route(message: types.Message, state: FSMContext):
 async def report(message: types.Message, state: FSMContext):
     builder = await choice_answer_platform_keyboard()
     await state.update_data(
-            report=message.text,
-            photo=message.photo[-1] if message.photo else None
-        )
+        report=message.text,
+        photo=message.photo[-1] if message.photo else None
+    )
     if message.photo:
         await message.bot.download(
-                file=message.photo[-1].file_id,
-                destination=f"media/{message.photo[-1].file_id}.png"
-            )
+            file=message.photo[-1].file_id,
+            destination=f"media/{message.photo[-1].file_id}.png"
+        )
     await message.answer(text.CHOICE_PLATFORM_TEXT, reply_markup=builder.as_markup())
     await state.set_state(Report.choice_platform)
 
 
 @router.callback_query(
-        StateFilter(Report.choice_platform),
-        СhoicePlatformCallback.filter(F.action == ActionChoicePlatform.email)
-    )
+    StateFilter(Report.choice_platform),
+    СhoicePlatformCallback.filter(F.action == ActionChoicePlatform.email)
+)
 async def choice_platform_email(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer(
         text.EMAIL_TEXT
@@ -80,30 +80,30 @@ async def choice_platform_email(call: types.CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(
-        StateFilter(Report.choice_platform),
-        СhoicePlatformCallback.filter(F.action == ActionChoicePlatform.telegram)
-    )
+    StateFilter(Report.choice_platform),
+    СhoicePlatformCallback.filter(F.action == ActionChoicePlatform.telegram)
+)
 async def choice_platform_telegram(call: types.CallbackQuery, state: FSMContext):
-    await show_result_text(call.message, state)
+    await ResultHandler.show_result_text(call.message, state)
 
 
 @router.message(StateFilter(Report.email), FormatFilter())
 async def email(message: types.Message, state: FSMContext):
     await state.update_data(email=message.text)
-    await show_result_text(message, state)
+    await ResultHandler.show_result_text(message, state)
 
 
 @router.callback_query(
-            StateFilter(Report), 
-            СhoiceSuccesCallback.filter(F.action == ActionStart.start)
-        )
+    StateFilter(Report),
+    СhoiceSuccesCallback.filter(F.action == ActionStart.start)
+)
 async def finish_report(call: types.CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
-    body = await get_email_result_text(state_data)
+    body = await ResultHandler.show_result_text(call.message, state, is_email=True)
     sender.send_email(
-            body=body, 
-            photo_data=f"media/{state_data['photo'].file_id}.png" 
-            if state_data["photo"] else None
-        )
+        body=body,
+        photo_data=f"media/{state_data['photo'].file_id}.png"
+        if state_data["photo"] else None
+    )
     await call.message.answer(text.SUCCES_TEXT)
     await state.clear()

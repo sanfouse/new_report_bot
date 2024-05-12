@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.fsm.context import FSMContext
 from functools import wraps
 
+
 def reset_state_on_error(func):
     @wraps(func)
     async def wrapper(call: types.CallbackQuery = None, message: types.Message = None, **kwargs):

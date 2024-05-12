@@ -2,11 +2,12 @@ from aiogram import types
 from aiogram.filters import Filter
 from .services import FormatChecker
 
+
 class FormatFilter(Filter):
     async def __call__(self, message: types.Message):
         if message.content_type != 'text':
             return False
-        
+
         text = message.text
 
         if FormatChecker.check_time_format(text):

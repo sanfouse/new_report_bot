@@ -4,6 +4,7 @@ from keyboards.actions import ActionStart
 from .actions import ActionChoicePlatform
 from .callbacks import СhoicePlatformCallback, СhoiceSuccesCallback
 
+
 async def choice_answer_platform_keyboard() -> InlineKeyboardBuilder:
     builder = InlineKeyboardBuilder()
 
