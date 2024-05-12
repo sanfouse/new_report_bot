@@ -4,8 +4,8 @@ services:
   app:
     build: .
     environment:
-      - BOT_TOKEN=5909559188:AAH0rRETt-l3rlX6xRlW4RViEdHaFI8-JMo
-      - EMAIL_PASSWORD=kHnWdjiyX4fqg59n6zWB
-      - EMAIL_LOGIN=reportbotaiogram@mail.ru
-      - EMAIL_ADDRESS=sanfit@vk.com
+      - BOT_TOKEN=7110527080:AAFU--2UHXIDq2Z7v_j5K9UVmW6tuvi21Cc
+      - EMAIL_PASSWORD=Lhivd2yZch2xha5ShhdZ
+      - EMAIL_LOGIN=savtogaz@mail.ru
+      - EMAIL_ADDRESS=Nasvizi247@mail.ru
     command: ["python3", "bot.py"]
