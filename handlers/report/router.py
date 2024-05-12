@@ -11,6 +11,7 @@ from keyboards.report.inline import choice_answer_platform_keyboard
 from states.default import Report
 
 from .services import get_email_result_text, show_result_text
+from .filters import FormatFilter
 from mailer import sender
 
 router = Router()
@@ -23,14 +24,14 @@ async def route_number(message: types.Message, state: FSMContext):
     await state.set_state(Report.date)
 
 
-@router.message(StateFilter(Report.date))
+@router.message(StateFilter(Report.date), FormatFilter())
 async def date(message: types.Message, state: FSMContext):
     await state.update_data(date=message.text, email="")
     await message.answer(text.TIME_TEXT)
     await state.set_state(Report.time)
 
 
-@router.message(StateFilter(Report.time))
+@router.message(StateFilter(Report.time), FormatFilter())
 async def time(message: types.Message, state: FSMContext):
     await state.update_data(time=message.text)
     await message.answer(text.CAR_NUMBERS_TEXT)
@@ -54,9 +55,15 @@ async def route(message: types.Message, state: FSMContext):
 @router.message(StateFilter(Report.report))
 async def report(message: types.Message, state: FSMContext):
     builder = await choice_answer_platform_keyboard()
-    await state.update_data(report=message.text, photo=message.photo[-1] if message.photo else None)
+    await state.update_data(
+            report=message.text,
+            photo=message.photo[-1] if message.photo else None
+        )
     if message.photo:
-        await message.bot.download(file=message.photo[-1].file_id, destination=f"media/{message.photo[-1].file_id}.png")
+        await message.bot.download(
+                file=message.photo[-1].file_id,
+                destination=f"media/{message.photo[-1].file_id}.png"
+            )
     await message.answer(text.CHOICE_PLATFORM_TEXT, reply_markup=builder.as_markup())
     await state.set_state(Report.choice_platform)
 
@@ -80,16 +87,23 @@ async def choice_platform_telegram(call: types.CallbackQuery, state: FSMContext)
     await show_result_text(call.message, state)
 
 
-@router.message(StateFilter(Report.email))
+@router.message(StateFilter(Report.email), FormatFilter())
 async def email(message: types.Message, state: FSMContext):
     await state.update_data(email=message.text)
     await show_result_text(message, state)
 
 
-@router.callback_query(StateFilter(Report), СhoiceSuccesCallback.filter(F.action == ActionStart.start))
+@router.callback_query(
+            StateFilter(Report), 
+            СhoiceSuccesCallback.filter(F.action == ActionStart.start)
+        )
 async def finish_report(call: types.CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     body = await get_email_result_text(state_data)
-    sender.send_email(body=body, photo_data=f"media/{state_data['photo'].file_id}.png" if state_data["photo"] else None)
+    sender.send_email(
+            body=body, 
+            photo_data=f"media/{state_data['photo'].file_id}.png" 
+            if state_data["photo"] else None
+        )
     await call.message.answer(text.SUCCES_TEXT)
     await state.clear()

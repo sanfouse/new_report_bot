@@ -10,8 +10,8 @@ DESCRIPTION_TEXT = """
 """
 CANCEL_TEXT = '❌ Отмена, чтобы начать снова /start'
 ROUTE_NUMBER_TEXT = "Напишите пожалуйста номер маршрута"
-DATE_TEXT = 'Введите дату'
-TIME_TEXT = 'Введите время'
+DATE_TEXT = 'Введите дату \n\nФормат: XX.YY.ZZZZ'
+TIME_TEXT = 'Введите время \n\nФормат: XX:YY'
 ROUTE_TEXT = "Напишите пожалуйста название остановки, направление"
 CAR_NUMBERS_TEXT = "Введите грз транспортного средства"
 REPORT_TEXT = """

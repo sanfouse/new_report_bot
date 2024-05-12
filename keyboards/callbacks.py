@@ -3,6 +3,3 @@ from keyboards.actions import ActionStart
 
 class СhoiceCallback(CallbackData, prefix='choice'):
     action: ActionStart
-
-
-    
