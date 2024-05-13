@@ -42,12 +42,12 @@ class ResultHandler:
 class FormatChecker:
     @staticmethod
     def check_time_format(input_time):
-        pattern = re.compile(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$')
+        pattern = re.compile(r'^([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
         return bool(re.match(pattern, input_time))
 
     @staticmethod
     def check_date_format(input_date):
-        pattern = re.compile(r'^\d{2}\.\d{2}\.\d{4}$')
+        pattern = re.compile(r'^\d{1,2}\.\d{1,2}\.\d{4}$')
         return bool(re.match(pattern, input_date))
 
     @staticmethod
