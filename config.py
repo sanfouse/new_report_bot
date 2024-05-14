@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     EMAIL_PASSWORD: str
     EMAIL_LOGIN: str
     EMAIL_ADDRESS: str
-    REDIS_URL: str
+    # REDIS_URL: str
 
     model_config = SettingsConfigDict(env_file=".env")
 
