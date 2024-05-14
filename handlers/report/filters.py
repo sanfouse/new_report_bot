@@ -16,7 +16,7 @@ class FormatFilter(Filter):
 
     async def __call__(self, message: types.Message):
         flag = False
-        
+
         if message.content_type != 'text':
             return False
         text = message.text
@@ -32,4 +32,3 @@ class FormatFilter(Filter):
         if not flag:
             await message.answer("Некорректный формат. Пожалуйста, введите данные в корректном формате.")
         return flag
-        

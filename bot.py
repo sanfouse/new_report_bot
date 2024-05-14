@@ -4,12 +4,13 @@ from handlers import commands, report
 from config import settings
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.client.bot import DefaultBotProperties
+from aiogram.fsm.storage.redis import RedisStorage
 
 bot = Bot(
     token=settings.BOT_TOKEN, default=DefaultBotProperties(
-        parse_mode=ParseMode.HTML)
+        parse_mode=ParseMode.HTML, )
 )
-dp = Dispatcher()
+dp = Dispatcher(storage=RedisStorage.from_url(settings.REDIS_URL))
 
 
 async def main():

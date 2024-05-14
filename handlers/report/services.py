@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 import text
 from keyboards.report.inline import command_finish_keyboard
-
+from utils.photo import Photo
 
 class ResultHandler:
     @staticmethod
@@ -29,8 +29,8 @@ class ResultHandler:
         state_data = await state.get_data()
         builder = await command_finish_keyboard()
         RESULT_TEXT = await cls.get_result_text(state_data, is_email)
-        if state_data["photo"]:
-            photo: types.PhotoSize = state_data["photo"]
+        photo: Photo = state_data.get("photo")
+        if photo:
             return await message.answer_photo(
                 photo=photo.file_id,
                 caption=RESULT_TEXT,

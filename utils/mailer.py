@@ -3,7 +3,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from config import settings
-
+from utils.photo import Photo
 
 class EmailSender:
     def __init__(self, login, password, smtp_server="smtp.mail.ru", smtp_port=587):
@@ -12,19 +12,19 @@ class EmailSender:
         self.smtp_server = smtp_server
         self.smtp_port = smtp_port
 
-    def create_message(self, body, recipient, subject, photo_data):
+    def create_message(self, body, recipient, subject, photo: Photo = None):
         message = MIMEMultipart()
         message["From"] = self.login
         message["To"] = recipient
         message["Subject"] = subject
         message.attach(MIMEText(body, "html"))
 
-        if photo_data:
-            with open(photo_data, "rb") as f:
+        if photo:
+            with open(photo.file_path, "rb") as f:
                 image_data = f.read()
                 image = MIMEImage(image_data)
                 image.add_header('Content-Disposition',
-                                 'attachment', filename='photo.jpg')
+                                 'attachment', filename=photo.file_name)
                 message.attach(image)
 
         return message

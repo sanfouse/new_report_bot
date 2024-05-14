@@ -12,8 +12,8 @@ from states.default import Report
 
 from .services import ResultHandler
 from .filters import FormatFilter
-from mailer import sender
-
+from utils.mailer import sender
+from utils.photo import Photo
 router = Router()
 
 
@@ -55,15 +55,21 @@ async def route(message: types.Message, state: FSMContext):
 @router.message(StateFilter(Report.report))
 async def report(message: types.Message, state: FSMContext):
     builder = await choice_answer_platform_keyboard()
+
     await state.update_data(
-        report=message.text,
-        photo=message.photo[-1] if message.photo else None
+        report=message.text
     )
+
     if message.photo:
-        await message.bot.download(
-            file=message.photo[-1].file_id,
-            destination=f"media/{message.photo[-1].file_id}.png"
+        photo = Photo(message)
+        await state.update_data(
+            photo=photo
         )
+        await message.bot.download(
+            file=photo.file_id,
+            destination=photo.file_path
+        )
+
     await message.answer(text.CHOICE_PLATFORM_TEXT, reply_markup=builder.as_markup())
     await state.set_state(Report.choice_platform)
 
@@ -99,11 +105,11 @@ async def email(message: types.Message, state: FSMContext):
 )
 async def finish_report(call: types.CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
+    photo: Photo = state_data.get("photo")
     body = await ResultHandler.get_result_text(state_data, is_email=True)
     sender.send_email(
         body=body,
-        photo_data=f"media/{state_data['photo'].file_id}.png"
-        if state_data["photo"] else None
+        photo_data=photo
     )
     await call.message.answer(text.SUCCES_TEXT)
     await state.clear()
