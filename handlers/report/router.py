@@ -24,14 +24,14 @@ async def route_number(message: types.Message, state: FSMContext):
     await state.set_state(Report.date)
 
 
-@router.message(StateFilter(Report.date), FormatFilter())
+@router.message(StateFilter(Report.date), FormatFilter("date"))
 async def date(message: types.Message, state: FSMContext):
     await state.update_data(date=message.text, email="")
     await message.answer(text.TIME_TEXT)
     await state.set_state(Report.time)
 
 
-@router.message(StateFilter(Report.time), FormatFilter())
+@router.message(StateFilter(Report.time), FormatFilter("time"))
 async def time(message: types.Message, state: FSMContext):
     await state.update_data(time=message.text)
     await message.answer(text.CAR_NUMBERS_TEXT)
@@ -84,13 +84,13 @@ async def choice_platform_email(call: types.CallbackQuery, state: FSMContext):
     СhoicePlatformCallback.filter(F.action == ActionChoicePlatform.telegram)
 )
 async def choice_platform_telegram(call: types.CallbackQuery, state: FSMContext):
-    await ResultHandler.show_result_text(call.message, state)
+    await ResultHandler.show_result_text(call.message, state, is_email=False)
 
 
-@router.message(StateFilter(Report.email), FormatFilter())
+@router.message(StateFilter(Report.email), FormatFilter("email"))
 async def email(message: types.Message, state: FSMContext):
     await state.update_data(email=message.text)
-    await ResultHandler.show_result_text(message, state)
+    await ResultHandler.show_result_text(message, state, is_email=False)
 
 
 @router.callback_query(
@@ -99,7 +99,7 @@ async def email(message: types.Message, state: FSMContext):
 )
 async def finish_report(call: types.CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
-    body = await ResultHandler.show_result_text(call.message, state, is_email=True)
+    body = await ResultHandler.get_result_text(state_data, is_email=True)
     sender.send_email(
         body=body,
         photo_data=f"media/{state_data['photo'].file_id}.png"
