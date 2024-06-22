@@ -7,6 +7,7 @@ import text
 from keyboards.report.inline import command_finish_keyboard
 from utils.photo import Photo
 
+
 class ResultHandler:
     @staticmethod
     async def get_result_text(data: dict, is_email: bool = False) -> str:
@@ -42,7 +43,7 @@ class ResultHandler:
 class FormatChecker:
     @staticmethod
     def check_time_format(input_time):
-        pattern = re.compile(r'^([0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+        pattern = re.compile("(24:00|2[0-3]:[0-5][0-9]|[0-1][0-9]:[0-5][0-9])")
         return bool(re.match(pattern, input_time))
 
     @staticmethod

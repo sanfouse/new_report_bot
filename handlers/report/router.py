@@ -11,9 +11,11 @@ from keyboards.report.inline import choice_answer_platform_keyboard
 from states.default import Report
 
 from .services import ResultHandler
-from .filters import FormatFilter
+from .filters import FormatFilter, FormatType
 from utils.mailer import sender
 from utils.photo import Photo
+
+
 router = Router()
 
 
@@ -24,14 +26,14 @@ async def route_number(message: types.Message, state: FSMContext):
     await state.set_state(Report.date)
 
 
-@router.message(StateFilter(Report.date), FormatFilter("date"))
+@router.message(StateFilter(Report.date), FormatFilter(FormatType.date))
 async def date(message: types.Message, state: FSMContext):
     await state.update_data(date=message.text, email="")
     await message.answer(text.TIME_TEXT)
     await state.set_state(Report.time)
 
 
-@router.message(StateFilter(Report.time), FormatFilter("time"))
+@router.message(StateFilter(Report.time), FormatFilter(FormatType.time))
 async def time(message: types.Message, state: FSMContext):
     await state.update_data(time=message.text)
     await message.answer(text.CAR_NUMBERS_TEXT)
@@ -93,7 +95,7 @@ async def choice_platform_telegram(call: types.CallbackQuery, state: FSMContext)
     await ResultHandler.show_result_text(call.message, state, is_email=False)
 
 
-@router.message(StateFilter(Report.email), FormatFilter("email"))
+@router.message(StateFilter(Report.email), FormatFilter(FormatType.email))
 async def email(message: types.Message, state: FSMContext):
     await state.update_data(email=message.text)
     await ResultHandler.show_result_text(message, state, is_email=False)

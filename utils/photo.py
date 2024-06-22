@@ -36,11 +36,21 @@ class Photo:
     @property
     def file_id(self) -> str:
         return self._file_id
-    
+
     @property
     def file_path(self) -> str:
         return self._file_path
-    
+
     @property
     def file_name(self) -> str:
         return self._file_name
+    
+    @property
+    def base_dir(self) -> str:
+        return self._BASE_DIR
+    
+    # @base_dir.setter
+    # def base_dir(self, base_dir: str):
+    #     if type(base_dir) not in (str):
+    #         raise TypeError(f"BASE_DIR must be str, not {type(base_dir)}")
+    #     self._BASE_DIR = base_dir

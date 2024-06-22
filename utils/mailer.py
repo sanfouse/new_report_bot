@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 from config import settings
 from utils.photo import Photo
 
+
 class EmailSender:
     def __init__(self, login, password, smtp_server="smtp.mail.ru", smtp_port=587):
         self.login = login

@@ -22,11 +22,11 @@ class FormatFilter(Filter):
         text = message.text
 
         match self.format_type:
-            case FormatType.date.value:
+            case FormatType.date:
                 flag = FormatChecker.check_date_format(text)
-            case FormatType.time.value:
+            case FormatType.time:
                 flag = FormatChecker.check_time_format(text)
-            case FormatType.email.value:
+            case FormatType.email:
                 flag = FormatChecker.check_email_format(text)
 
         if not flag:
