@@ -1,20 +1,11 @@
 version: "3"
 
 services:
-  # app:
-  #   build: .
-  #   environment:
-  #     - BOT_TOKEN=7110527080:AAFU--2UHXIDq2Z7v_j5K9UVmW6tuvi21Cc
-  #     - EMAIL_PASSWORD=Lhivd2yZch2xha5ShhdZ
-  #     - EMAIL_LOGIN=savtogaz@mail.ru
-  #     - EMAIL_ADDRESS=Nasvizi247@mail.ru
-  #   command: ["python3", "bot.py"]
-  redis:
-    image: redis:7.2
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-volumes:
-  redis_data:
+  app:
+    build: .
+    environment:
+      - BOT_TOKEN=7110527080:AAFU--2UHXIDq2Z7v_j5K9UVmW6tuvi21Cc
+      - EMAIL_PASSWORD=eabWqW3zt2Qa4CZFGBrg
+      - EMAIL_LOGIN=avtogaz.samara@mail.ru
+      - EMAIL_ADDRESS=Nasvizi247@mail.ru
+    command: ["python3", "bot.py"]
